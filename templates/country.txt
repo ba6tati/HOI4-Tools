@@ -1,6 +1,0 @@
-
-
-graphical_culture = #CULTURE#_gfx
-graphical_culture_2d = #CULTURE#_2d
-
-color = { #COLOR# }
