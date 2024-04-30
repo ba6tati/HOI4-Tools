@@ -1,0 +1,17 @@
+characters = {
+	#TAG#_#NAME# = {
+		name = #TAG#_#NAME#
+		portraits = {
+			civilian = {
+				large = GFX_Portrait_#TAG#_#NAME#
+			}
+		}
+
+		country_leader = {
+			ideology = #IDEOLOGY#
+			traits = { #TRAITS# }
+			expire = "1965.1.1.1"
+			id = -1
+		}
+	}
+}

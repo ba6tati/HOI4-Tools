@@ -1,0 +1,32 @@
+capital = #CAPITAL#
+
+#oob = "#TAG#_1878"
+
+set_research_slots = #RESEARCH_SLOTS#
+
+set_stability = #STABILITY#
+set_war_support = #WAR_SUPPORT#
+
+add_ideas = {
+
+}
+
+set_technology = {
+    #EDIT after making technology tree
+}
+
+recruit_character=#TAG#_
+
+set_popularities = {
+    democratic = #DEMOCRATIC#
+    fascism = #FASCISM#
+    neutrality = #NEUTRALITY#
+    communism = #COMMUNISM#
+}
+
+set_politics = {
+    ruling_party = #RULING_PARTY#
+    last_election = "1878.7.13"
+    election_frequency = #ELECTION_FREQUENCY# # Months
+    elections_allowed = #ELECTIONS_ALLOWED#
+}
