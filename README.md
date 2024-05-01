@@ -2,8 +2,10 @@
 Welcome to HOI4 Tools! This project aims to expedite the work of Hearts of Iron IV modders by providing a set of tools built with customtkinter. Whether you're creating new countries, leaders, flags, states, etc. or enhancing existing features, this toolbox is designed to streamline your modding workflow.
 
 ## Features
-### Planned
+### Added
 * Country generator
+  
+### Planned
 * Character generator
 * State generator
 
