@@ -1,18 +1,20 @@
 from customtkinter import *
 from tkinter import filedialog
 
+from app.windows.create_country import CreateCountryWindow
+
 class MainWindow(CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         
         self.mod_path = str()
         
-        self.mod_descriptor_lbl = CTkLabel(self.master, text='Mod Descriptor: ')
-        self.mod_descriptor = CTkEntry(self.master, placeholder_text='Mod Descriptor')
+        self.mod_descriptor_lbl = CTkLabel(self, text='Mod Descriptor: ')
+        self.mod_descriptor = CTkEntry(self, placeholder_text='Mod Descriptor')
     
-        self.select = CTkButton(self.master, text='Select', command=self.select_mod_descriptor)
+        self.select = CTkButton(self, text='Select', command=self.select_mod_descriptor)
         
-        self.create_country_btn = CTkButton(self.master, text='Create Country', command=self.create_country)
+        self.create_country_btn = CTkButton(self, text='Create Country', command=self.create_country)
         
         self.mod_descriptor_lbl.grid(column=0, row=0)
         self.mod_descriptor.grid(column=1, row=0)
@@ -42,9 +44,9 @@ class MainWindow(CTkFrame):
             f.write(mod_descriptor)
         
     def create_country(self):
-        window = CTkToplevel(self.master)
-        CreateCountryWindow(window, self.mod_path)
-        window.mainloop()
+        window = CreateCountryWindow(self, self.mod_path)
+        window.after(10, window.lift)
+        #window.mainloop()
         
     def get_mod_path(self, event=None):
         try:

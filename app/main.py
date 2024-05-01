@@ -15,7 +15,7 @@ class MainApplication(CTk):
         
         self.main_window = MainWindow(self)
         
-        self.main_window.pack()
+        self.main_window.grid(row=0, column=0)
         
 if __name__ == "__main__":
     app = MainApplication()
