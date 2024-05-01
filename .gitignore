@@ -2,4 +2,5 @@ venv/
 app/__pycache__/
 app/windows/__pycache__/
 cache/
+__pycache__/
 *.pyc
