@@ -2,6 +2,7 @@ from customtkinter import *
 from CTkColorPicker import AskColor
 from colormap import hex2rgb, rgb2hex
 from config import WINDOW_TITLE, WINDOW_SIZE
+from app.windows.create_flag import CreateFlag
 
 cultures = ('middle_eastern', 'eastern_european', 'western_european', 'african', 'asian', 'southamerican', 'commonwealth')
 
@@ -32,6 +33,8 @@ class CreateCountryWindow(CTkToplevel):
         self.color = CTkEntry(self.frame, placeholder_text='R G B', state='disabled')
         self.select_color_btn = CTkButton(self.frame, text='Select Color', command=self.select_color)
         
+        self.create_flag_check = CTkCheckBox(self.frame, text='Create Flag', command=self.create_flag)
+        
         self.generate_btn = CTkButton(self.frame, text='Generate', command=self.generate)
         
         self.mod_path.grid(row=0, column=0, columnspan=2)
@@ -45,6 +48,7 @@ class CreateCountryWindow(CTkToplevel):
         self.color.grid(row=4, column=1)
         self.select_color_btn.grid(row=4, column=2)
         self.generate_btn.grid(row=5, column=0, columnspan=3)
+        self.create_flag_check.grid(row=6, column=0)
             
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         
@@ -110,5 +114,17 @@ class CreateCountryWindow(CTkToplevel):
         self.culture.set(cultures[0])
         self.color.delete(0, END)
         
+    def create_flag(self):
+        if self.create_flag_check.get():
+            window = CreateFlag(self, self.mod_path.get(), self.tag.get())
+            window.after(10, window.lift)
+        else:
+            try:
+                window = [w for w in self.winfo_children() if isinstance(w, CreateFlag)][0]
+                window.destroy()
+            except IndexError:
+                pass
+        #window.mainloop()
+    
 if __name__ == '__main__':
     raise Exception('Run: python app/main.py')
