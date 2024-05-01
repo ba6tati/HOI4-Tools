@@ -33,7 +33,7 @@ class CreateCountryWindow(CTkToplevel):
         self.color = CTkEntry(self.frame, placeholder_text='R G B', state='disabled')
         self.select_color_btn = CTkButton(self.frame, text='Select Color', command=self.select_color)
         
-        self.create_flag_check = CTkCheckBox(self.frame, text='Create Flag', command=self.create_flag)
+        self.create_flag_btn = CTkButton(self.frame, text='Create Flag', command=self.create_flag)
         
         self.generate_btn = CTkButton(self.frame, text='Generate', command=self.generate)
         
@@ -47,8 +47,9 @@ class CreateCountryWindow(CTkToplevel):
         self.color_lbl.grid(row=4, column=0)
         self.color.grid(row=4, column=1)
         self.select_color_btn.grid(row=4, column=2)
-        self.generate_btn.grid(row=5, column=0, columnspan=3)
-        self.create_flag_check.grid(row=6, column=0)
+        self.create_flag_btn.grid(row=5, column=0)
+        self.generate_btn.grid(row=6, column=0, columnspan=3)
+        
             
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         
@@ -115,16 +116,13 @@ class CreateCountryWindow(CTkToplevel):
         self.color.delete(0, END)
         
     def create_flag(self):
-        if self.create_flag_check.get():
+        opened = False
+        for w in self.winfo_children():
+            if isinstance(w, CreateFlag):
+                opened = True
+        if not opened:
             window = CreateFlag(self, self.mod_path.get(), self.tag.get())
             window.after(10, window.lift)
-        else:
-            try:
-                window = [w for w in self.winfo_children() if isinstance(w, CreateFlag)][0]
-                window.destroy()
-            except IndexError:
-                pass
-        #window.mainloop()
     
 if __name__ == '__main__':
     raise Exception('Run: python app/main.py')
