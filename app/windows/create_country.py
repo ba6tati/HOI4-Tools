@@ -6,6 +6,7 @@ from ctkcomponents import *
 from config import WINDOW_TITLE, WINDOW_SIZE
 from app.windows.create_flag import CreateFlag
 from app.utils import make_directory_if_not_exists
+from app.utils import open_window
 
 cultures = ('middle_eastern', 'eastern_european', 'western_european', 'african', 'asian', 'southamerican', 'commonwealth')
 
@@ -35,7 +36,9 @@ class CreateCountryWindow(CTkToplevel):
         self.color = CTkEntry(self.frame, placeholder_text='R G B', state='disabled')
         self.select_color_btn = CTkButton(self.frame, text='Select Color', command=self.select_color)
         
+        self.create_history_btn = CTkButton(self.frame, text='Create History File', command=self.create_history)
         self.create_flag_btn = CTkButton(self.frame, text='Create Flag', command=self.create_flag)
+        self.create_character_btn = CTkButton(self.frame, text='Create Character', command=self.create_character)
         
         self.generate_btn = CTkButton(self.frame, text='Create', command=self.create)
         
@@ -50,7 +53,9 @@ class CreateCountryWindow(CTkToplevel):
         self.color_lbl.grid(row=4, column=0)
         self.color.grid(row=4, column=1)
         self.select_color_btn.grid(row=4, column=2)
-        self.create_flag_btn.grid(row=5, column=0)
+        self.create_history_btn.grid(row=5, column=0)
+        self.create_flag_btn.grid(row=5, column=1)
+        self.create_character_btn.grid(row=5, column=2)
         self.generate_btn.grid(row=6, column=0, columnspan=3)
         
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
@@ -80,7 +85,13 @@ class CreateCountryWindow(CTkToplevel):
             self.mod_path.delete(0, END)
             self.mod_path.insert(0, mod_path)
             
+    def validate(self):
+        self.validate_name()
+        self.validate_tag()
+            
     def create(self):
+        self.validate()
+        
         if self.validation.get() == '':
             tag = self.tag.get()
             name = self.name.get()
@@ -111,27 +122,26 @@ class CreateCountryWindow(CTkToplevel):
             self.culture.set(cultures[0])
             self.color.delete(0, END)
     
-    def validate_tag(self, event):
+    def validate_tag(self, event=None):
         if len(self.tag.get()) != 3:
             self.validation.set('The TAG must be 3 characters long')
         else:
             self.validation.set('')
     
-    def validate_name(self, event):
+    def validate_name(self, event=None):
         if len(self.name.get()) < 1:
             self.validation.set('The country name must be at least 1 character long')
         else:
             self.validation.set('')
             
+    def create_history(self):
+        pass
         
     def create_flag(self):
-        opened = False
-        for w in self.winfo_children():
-            if isinstance(w, CreateFlag):
-                opened = True
-        if not opened:
-            window = CreateFlag(self, self.mod_path, self.tag.get())
-            window.after(10, window.lift)
+        open_window(self, CreateFlag, mod_path=self.mod_path, tag=self.tag)
+            
+    def create_character(self):
+        pass
     
 if __name__ == '__main__':
     raise Exception('Run: python app/main.py')

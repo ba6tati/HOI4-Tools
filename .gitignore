@@ -3,4 +3,6 @@ app/__pycache__/
 app/windows/__pycache__/
 cache/
 __pycache__/
+gitpush.py
+run.bat
 *.pyc
