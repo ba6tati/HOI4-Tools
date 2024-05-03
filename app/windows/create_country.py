@@ -1,8 +1,11 @@
 from customtkinter import *
 from CTkColorPicker import AskColor
 from colormap import hex2rgb, rgb2hex
+from ctkcomponents import *
+
 from config import WINDOW_TITLE, WINDOW_SIZE
 from app.windows.create_flag import CreateFlag
+from app.utils import make_directory_if_not_exists
 
 cultures = ('middle_eastern', 'eastern_european', 'western_european', 'african', 'asian', 'southamerican', 'commonwealth')
 
@@ -10,20 +13,19 @@ class CreateCountryWindow(CTkToplevel):
     def __init__(self, master, mod_path=None):
         super().__init__(master)
         
+        self.mod_path = mod_path
+        
+        self.validation = StringVar()
+        
         self.title(WINDOW_TITLE + ' | Create Country')
         self.geometry(WINDOW_SIZE)
         
         self.frame = CTkFrame(self)
         
-        
-        self.mod_path = CTkEntry(self.frame, placeholder_text='Mod Path')
-        
-        if mod_path:
-            self.mod_path.insert(0, mod_path)
-        
-        self.select_path_btn = CTkButton(self.frame, text='Select', command=self.select_directory)
+        self.validation_lbl = CTkLabel(self, textvariable=self.validation)
         
         self.tag = CTkEntry(self.frame, placeholder_text='TAG')
+        
         self.name = CTkEntry(self.frame, placeholder_text='Name')
         
         self.culture_lbl = CTkLabel(self.frame, text='Culture: ')
@@ -35,11 +37,12 @@ class CreateCountryWindow(CTkToplevel):
         
         self.create_flag_btn = CTkButton(self.frame, text='Create Flag', command=self.create_flag)
         
-        self.generate_btn = CTkButton(self.frame, text='Generate', command=self.generate)
+        self.generate_btn = CTkButton(self.frame, text='Create', command=self.create)
         
-        self.mod_path.grid(row=0, column=0, columnspan=2)
-        self.select_path_btn.grid(row=0, column=2)
+        for widget in self.frame.winfo_children():
+            widget.grid_configure(padx=10, pady=10, sticky=NSEW)
         
+        self.validation_lbl.place(relx=0.5, rely=0.07, anchor=CENTER)
         self.tag.grid(row=1, column=0, columnspan=3)
         self.name.grid(row=2, column=0, columnspan=3)
         self.culture_lbl.grid(row=3, column=0)
@@ -50,11 +53,10 @@ class CreateCountryWindow(CTkToplevel):
         self.create_flag_btn.grid(row=5, column=0)
         self.generate_btn.grid(row=6, column=0, columnspan=3)
         
-            
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-        
-        for widget in self.frame.winfo_children():
-            widget.grid_configure(padx=10, pady=10, sticky=NSEW)
+    
+        self.tag.bind('<FocusOut>', self.validate_tag)
+        self.name.bind('<FocusOut>', self.validate_name)
         
     def select_color(self):
         initial_color = '#ffffff'
@@ -78,42 +80,49 @@ class CreateCountryWindow(CTkToplevel):
             self.mod_path.delete(0, END)
             self.mod_path.insert(0, mod_path)
             
-    def generate(self):
-        mod_path = self.mod_path.get()
-        tag = self.tag.get()
-        name = self.name.get()
-        culture = self.culture.get()
-        color = self.color.get()
-        
-        try:
-            os.makedirs(f'{mod_path}/common/country_tags')
-            os.makedirs(f'{mod_path}/countries')
-        except FileExistsError:
-            pass
-        
-        with open(f'{mod_path}/common/country_tags/{mod_path.split('/')[-1]}_countries.txt', 'a+') as f:
-            f.write(f'\n{tag} = "countries/{name}.txt"')
-        
-        with open(f'templates/country.txt', 'r') as f:
-            data = f.read()
+    def create(self):
+        if self.validation.get() == '':
+            tag = self.tag.get()
+            name = self.name.get()
+            culture = self.culture.get()
+            color = self.color.get()
             
-        data = data.replace('#CULTURE#', culture).replace('#COLOR#', color)
-        
-        with open(f'{mod_path}/common/countries/{name}.txt', 'w+') as f:
-            f.write(data)	
+            make_directory_if_not_exists(f'{self.mod_path}/common/country_tags')
+            make_directory_if_not_exists(f'{self.mod_path}/common/countries')
             
-        with open(f'{mod_path}/common/countries/colors.txt', 'a+') as f:
-            data = f"""\n{tag} = (
-	color = rgb ( {color} )
-	color_ui = rgb ( {color} )
-)"""
+            with open(f'{self.mod_path}/common/country_tags/{self.mod_path.split('/')[-1]}_countries.txt', 'a+') as f:
+                f.write(f'\n{tag} = "countries/{name}.txt"')
             
-            f.write(data.replace('(', '{').replace(')', '}'))
+            with open(f'templates/country.txt', 'r') as f:
+                data = f.read()
+                
+            data = data.replace('#CULTURE#', culture).replace('#COLOR#', color)
             
-        self.tag.delete(0, END)
-        self.name.delete(0, END)
-        self.culture.set(cultures[0])
-        self.color.delete(0, END)
+            with open(f'{self.mod_path}/common/countries/{name}.txt', 'w+') as f:
+                f.write(data)	
+                
+            with open(f'{self.mod_path}/common/countries/colors.txt', 'a+') as f:
+                data = f"""\n{tag} = (\n\tcolor = rgb ( {color} )\n\tcolor_ui = rgb ( {color} )\n)"""
+                
+                f.write(data.replace('(', '{').replace(')', '}'))
+                
+            self.tag.delete(0, END)
+            self.name.delete(0, END)
+            self.culture.set(cultures[0])
+            self.color.delete(0, END)
+    
+    def validate_tag(self, event):
+        if len(self.tag.get()) != 3:
+            self.validation.set('The TAG must be 3 characters long')
+        else:
+            self.validation.set('')
+    
+    def validate_name(self, event):
+        if len(self.name.get()) < 1:
+            self.validation.set('The country name must be at least 1 character long')
+        else:
+            self.validation.set('')
+            
         
     def create_flag(self):
         opened = False
@@ -121,7 +130,7 @@ class CreateCountryWindow(CTkToplevel):
             if isinstance(w, CreateFlag):
                 opened = True
         if not opened:
-            window = CreateFlag(self, self.mod_path.get(), self.tag.get())
+            window = CreateFlag(self, self.mod_path, self.tag.get())
             window.after(10, window.lift)
     
 if __name__ == '__main__':

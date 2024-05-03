@@ -44,6 +44,7 @@ class MainWindow(CTkFrame):
             f.write(mod_descriptor)
         
     def create_country(self):
+        #print(self.mod_path)
         window = CreateCountryWindow(master=self, mod_path=self.mod_path)
         window.after(10, window.lift)
         #window.mainloop()
