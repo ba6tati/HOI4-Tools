@@ -4,7 +4,8 @@ from colormap import hex2rgb, rgb2hex
 from ctkcomponents import *
 
 from config import WINDOW_TITLE, WINDOW_SIZE
-from app.windows.create_flag import CreateFlag
+from app.windows import CreateFlag
+from app.windows import CreateHistory
 from app.utils import make_directory_if_not_exists
 from app.utils import open_window
 
@@ -27,7 +28,7 @@ class CreateCountryWindow(CTkToplevel):
         
         self.tag = CTkEntry(self.frame, placeholder_text='TAG')
         
-        self.name = CTkEntry(self.frame, placeholder_text='Name')
+        self.country_name = CTkEntry(self.frame, placeholder_text='Name')
         
         self.culture_lbl = CTkLabel(self.frame, text='Culture: ')
         self.culture = CTkOptionMenu(self.frame, values=cultures)
@@ -47,7 +48,7 @@ class CreateCountryWindow(CTkToplevel):
         
         self.validation_lbl.place(relx=0.5, rely=0.07, anchor=CENTER)
         self.tag.grid(row=1, column=0, columnspan=3)
-        self.name.grid(row=2, column=0, columnspan=3)
+        self.country_name.grid(row=2, column=0, columnspan=3)
         self.culture_lbl.grid(row=3, column=0)
         self.culture.grid(row=3, column=1, columnspan=2)
         self.color_lbl.grid(row=4, column=0)
@@ -61,7 +62,7 @@ class CreateCountryWindow(CTkToplevel):
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
     
         self.tag.bind('<FocusOut>', self.validate_tag)
-        self.name.bind('<FocusOut>', self.validate_name)
+        self.country_name.bind('<FocusOut>', self.validate_name)
         
     def select_color(self):
         initial_color = '#ffffff'
@@ -94,7 +95,7 @@ class CreateCountryWindow(CTkToplevel):
         
         if self.validation.get() == '':
             tag = self.tag.get()
-            name = self.name.get()
+            name = self.country_name.get()
             culture = self.culture.get()
             color = self.color.get()
             
@@ -118,7 +119,7 @@ class CreateCountryWindow(CTkToplevel):
                 f.write(data.replace('(', '{').replace(')', '}'))
                 
             self.tag.delete(0, END)
-            self.name.delete(0, END)
+            self.country_name.delete(0, END)
             self.culture.set(cultures[0])
             self.color.delete(0, END)
     
@@ -129,16 +130,16 @@ class CreateCountryWindow(CTkToplevel):
             self.validation.set('')
     
     def validate_name(self, event=None):
-        if len(self.name.get()) < 1:
+        if len(self.country_name.get()) < 1:
             self.validation.set('The country name must be at least 1 character long')
         else:
             self.validation.set('')
             
     def create_history(self):
-        pass
+        open_window(self, CreateHistory, mod_path=self.mod_path, tag=self.tag.get(), country_name=self.country_name.get())
         
     def create_flag(self):
-        open_window(self, CreateFlag, mod_path=self.mod_path, tag=self.tag)
+        open_window(self, CreateFlag, mod_path=self.mod_path, tag=self.tag.get())
             
     def create_character(self):
         pass

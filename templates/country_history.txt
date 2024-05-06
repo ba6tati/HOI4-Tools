@@ -1,6 +1,6 @@
 capital = #CAPITAL#
 
-#oob = "#TAG#_1878"
+#oob = "#TAG#_#START_YEAR#"
 
 set_research_slots = #RESEARCH_SLOTS#
 
@@ -26,7 +26,7 @@ set_popularities = {
 
 set_politics = {
     ruling_party = #RULING_PARTY#
-    last_election = "1878.7.13"
+    last_election = 1936.1.1
     election_frequency = #ELECTION_FREQUENCY# # Months
     elections_allowed = #ELECTIONS_ALLOWED#
 }
