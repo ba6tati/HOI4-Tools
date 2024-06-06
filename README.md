@@ -16,7 +16,7 @@ I welcome contributions from the community to make HOI4 Tools even better! Wheth
 1. Fork the repository
 2. Clone the repository
 ```
-git clone https://github.com/{YOUR USERNAME}/HOI4-Tools.git
+git clone https://github.com/ba6tati/HOI4-Tools.git
 ```
 3. Make changes
 4. Commit
